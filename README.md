@@ -52,22 +52,27 @@ Before you begin, ensure you have the following installed:
 
 3. **Set up the database**:
 
-   Create a new PostgreSQL database and update the `DATABASE_URL` in the `.env` file with your database credentials.
+   Create a new PostgreSQL database and update the following variables in your `.env` file with your database credentials:
+
+   ```
+   DB_DRIVER=postgresql+psycopg
+   DB_USER=your_db_user
+   DB_PASS=your_db_password
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_DATABASE=your_db_name
+   ```
 
 4. **Run the migrations**:
 
-   Use the following command to set up the database schema:
-
-   ```bash
-   alembic upgrade head
-   ```
+   (No migration scripts are included in this repository. Please create the necessary tables manually or add your own migration scripts if needed.)
 
 5. **Start the server**:
 
    Run the FastAPI application with the command below:
 
    ```bash
-   uvicorn main:app --reload
+   uvicorn api.main:app --reload
    ```
 
 ## Usage 💻
@@ -76,27 +81,26 @@ Once your server is running, you can access the API at `http://127.0.0.1:8000`. 
 
 ### Example Request
 
-To create a new agent, send a POST request to `/agents` with the following JSON body:
+To interact with an agent, send a POST request to `/v1/agents/{agent_id}/runs` with the following JSON body:
 
 ```json
 {
-  "name": "Agent Smith",
-  "type": "AI",
-  "status": "active"
+  "message": "Hello, agent!",
+  "stream": true,
+  "model": "gpt-4.1",
+  "user_id": "your_user_id",
+  "session_id": "your_session_id"
 }
 ```
 
+Replace `{agent_id}` with one of: `web_agent`, `agno_assist`, or `finance_agent`.
+
 ### Example Response
 
-You will receive a response like this:
+If `stream` is true, you will receive a streaming response (text/event-stream). If `stream` is false, you will receive a JSON response:
 
 ```json
-{
-  "id": 1,
-  "name": "Agent Smith",
-  "type": "AI",
-  "status": "active"
-}
+"Hello! How can I assist you today?"
 ```
 
 ## API Documentation 📖
